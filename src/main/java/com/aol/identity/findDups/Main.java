@@ -57,9 +57,13 @@ public class Main {
         //bloom.loadBloom(listFiles(dataFile));
         //bloom.printSummary();
 
-        BloomGuava bloomGuava = new BloomGuava(configProps);
-        bloomGuava.loadBloom(listFiles(dataFile));
-        bloomGuava.printSummary();
+        //BloomGuava bloomGuava = new BloomGuava(configProps);
+        //bloomGuava.loadBloom(listFiles(dataFile));
+        //bloomGuava.printSummary();
+
+        BloomCass bloomCass = new BloomCass(configProps);
+        bloomCass.loadBloom(listFiles(dataFile));
+        bloomCass.printSummary();
     }
 
     private static ArrayList<String> listFiles(String pattern) {
