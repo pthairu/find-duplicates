@@ -7,13 +7,10 @@ import com.github.joschi.jadconfig.JadConfig;
 import com.github.joschi.jadconfig.RepositoryException;
 import com.github.joschi.jadconfig.ValidationException;
 import com.github.joschi.jadconfig.repositories.PropertiesRepository;
-import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.tools.ant.DirectoryScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -34,7 +31,8 @@ public class Main {
         final JCommander jCommander = new JCommander(configArgs, args);
         jCommander.setProgramName("findDups");
 
-        String dataFile = configArgs.getDataFile();
+        String dataDir = configArgs.getDataDir();
+        String pattern = configArgs.getFilePattern();
         String configFile = configArgs.getConfigFile();
 
 
@@ -62,18 +60,14 @@ public class Main {
         //bloomGuava.printSummary();
 
         BloomCass bloomCass = new BloomCass(configProps);
-        bloomCass.loadBloom(listFiles(dataFile));
+        bloomCass.loadBloom(listFiles(dataDir, pattern));
         bloomCass.printSummary();
     }
 
-    private static ArrayList<String> listFiles(String pattern) {
-        File dir = new File("/data/servers/data/*/CAT/");
-        FileFilter fileFilter = new RegexFileFilter(pattern);
-        //return dir.listFiles(fileFilter);
-
+    private static ArrayList<String> listFiles(String dataDir, String pattern) {
         DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setIncludes(new String[]{"**/guids_*"});
-        scanner.setBasedir("/data/servers/data");
+        scanner.setIncludes(new String[]{pattern});
+        scanner.setBasedir(dataDir);
         scanner.scan();
         String[] files = scanner.getIncludedFiles();
         _LOG.info(Arrays.toString(files));

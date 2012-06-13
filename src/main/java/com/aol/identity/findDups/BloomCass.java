@@ -4,6 +4,7 @@ import com.aol.identity.findDups.cassandra.Filter;
 import com.aol.identity.findDups.cassandra.FilterFactory;
 import com.aol.identity.findDups.util.ConfigProps;
 import com.aol.identity.findDups.util.DataFile;
+import org.github.jamm.MemoryMeter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +21,11 @@ import java.util.ArrayList;
  */
 public class BloomCass {
     private static final Logger _LOG = LoggerFactory.getLogger(BloomCass.class);
-    private Filter bloomFilter;
+    private static Filter bloomFilter;
     private int expectedNumElements = 1000000;
     private double falsePositiveProbability = 0.001;
-    private int dupCount = 0;
-    private int keyCount = 0;
+    private static int dupCount = 0;
+    private static int keyCount = 0;
 
 
 
@@ -45,6 +46,7 @@ public class BloomCass {
         CharBuffer cbuf = buf.asCharBuffer();
 
         bloomFilter = FilterFactory.getFilter(expectedNumElements, falsePositiveProbability);
+        memMeter(bloomFilter, "bloomFilter");
 
         for (String s: arr) {
             cbuf.put(s);
@@ -65,6 +67,8 @@ public class BloomCass {
         CharBuffer cbuf = buf.asCharBuffer();
 
         bloomFilter = FilterFactory.getFilter(expectedNumElements, falsePositiveProbability);
+
+        memMeter(bloomFilter, "bloomFilter");
 
         for (String data_file: data_files) {
             _LOG.info("Processing {} ....", data_file);
@@ -89,13 +93,21 @@ public class BloomCass {
         }
     }
 
+    private static void memMeter(Object obj, String name) {
+        MemoryMeter meter = new MemoryMeter();
+        long msize = meter.measureDeep(obj);
+        _LOG.info("{} mem size = {}/(1024x1024) ==> {} Mbs",
+                new Object[]{name, msize, (msize/(1024 * 1024))});
+    }
+
     public static void main(String [] args) {
         BloomCass b = new BloomCass();
         String[] arr = {"test1", "test2", "test1"};
         b.loadBloom(arr);
+        printSummary();
     }
 
-    public void printSummary() {
+    public static void printSummary() {
         _LOG.info("keyCount = {}", keyCount);
         _LOG.info("Found {} duplicates", dupCount);
     }

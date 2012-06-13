@@ -10,19 +10,21 @@ import com.beust.jcommander.Parameter;
  * To change this template use File | Settings | File Templates.
  */
 public class ConfigArgs {
-    @Parameter(names = {"-f", "--datafile"}, description =  "Input json data file")
-    private String dataFile = "guids_*";
+    @Parameter(names = {"-r", "--fileregex"}, description =  "Input file regex")
+    private String filePattern = "**/guids_*";
 
+    @Parameter(names = {"-d", "--datadir"}, description =  "Base data directory")
+    private String dataDir = "/data/servers/data";
 
     @Parameter(names = {"-c", "--configfile"}, description =  "properties file")
     private String configFile = "findDups.properties";
 
-    public String getDataFile() {
-        return dataFile;
+    public String getFilePattern() {
+        return filePattern;
     }
 
-    public void setDataFile(String dataFile) {
-        this.dataFile = dataFile;
+    public void setFilePattern(String filePattern) {
+        this.filePattern = filePattern;
     }
 
     public String getConfigFile() {
@@ -33,4 +35,11 @@ public class ConfigArgs {
         this.configFile = configFile;
     }
 
+    public String getDataDir() {
+        return dataDir;
+    }
+
+    public void setDataDir(String dataDir) {
+        this.dataDir = dataDir;
+    }
 }
