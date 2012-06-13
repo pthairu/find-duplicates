@@ -12,10 +12,11 @@ Cassandra's bloom filter implementation works best for my use case as it handles
 
 2. Define bloom filter size and false positive probability properties
 
-    `bloom.elements=2000000000
-    bloom.probability=0.0001`
+    `bloom.elements=2000000000`
 
-3. Need jamm.jar if you want to see memory size (https://github.com/jbellis/jamm)
+    `bloom.probability=0.0001`
+
+3. Also need jamm.jar to see mem sizes (https://github.com/jbellis/jamm)
 
 4. Run it
 
